@@ -18,12 +18,19 @@ type Props = {
   currentLocation: { lat: number; lng: number } | null;
 };
 
-const MapClickHandler = ({ onClick }: { onClick: (latlng: { lat: number; lng: number }) => void }) => {
+type MapClickHandlerProps = {
+  onClick: (latlng: { lat: number; lng: number }) => void;
+};
+
+const MapClickHandler: React.FC<MapClickHandlerProps> = ({ onClick }) => {
   useMapEvents({
     click(e) {
-      onClick(e.latlng);
+      // TypeScript should know that e.latlng is a L.LatLng object
+      const latlng = e.latlng as L.LatLng; // Type casting to L.LatLng
+      onClick({ lat: latlng.lat, lng: latlng.lng });
     },
   });
+
   return null;
 };
 
